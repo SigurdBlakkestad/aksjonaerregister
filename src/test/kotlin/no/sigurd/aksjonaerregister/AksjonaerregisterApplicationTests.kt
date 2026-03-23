@@ -1,4 +1,4 @@
-package com.example.aksjonaerregister
+package no.sigurd.aksjonaerregister
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
