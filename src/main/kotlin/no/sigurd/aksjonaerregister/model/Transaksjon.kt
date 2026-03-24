@@ -7,12 +7,12 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import org.hibernate.validator.constraints.UUID
+import java.util.UUID
 import java.math.BigDecimal
 import java.time.LocalDate
 
 @Entity
-class Transaksjon (
+class Transaksjon(
     @Id
     @GeneratedValue
     val id: UUID? = null,
@@ -20,7 +20,6 @@ class Transaksjon (
     @ManyToOne
     @JoinColumn(name = "aksjonaer_id", nullable = false)
     val aksjonaer: Aksjonaer,
-
     val aksjenavn: String,
 
     @Enumerated(EnumType.STRING)
