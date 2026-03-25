@@ -1,6 +1,6 @@
 package no.sigurd.aksjonaerregister.service
 
-import no.sigurd.aksjonaerregister.model.Aksjonaer
+import no.sigurd.aksjonaerregister.model.entity.Aksjonaer
 import org.springframework.stereotype.Service
 import no.sigurd.aksjonaerregister.repository.AksjonaerRepository
 
@@ -10,6 +10,6 @@ class AksjonaerService( private val aksjonaerRepository: AksjonaerRepository ) {
         return aksjonaerRepository.save(aksjonaer)
     }
     fun hentAksjonaer(foedselsnummer: String): Aksjonaer? {
-        return aksjonaerRepository.findByFoedselsnummer(foedselsnummer)
+        return aksjonaerRepository.findByFoedselsnummer(foedselsnummer).orElseThrow { Exception("Fant ikke aksjonær med fødselsnummer: $foedselsnummer") }
     }
 }
