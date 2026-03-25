@@ -24,7 +24,7 @@ constructor(
     @field:Size(min = 4, max = 64, message = "Passord må være mellom 4 og 64 karakterer")
     @field:NotEmpty("Passord kan ikke være tomt")
     var passord: String?,
-    @field:NotBlank(message = "Alder kan ikke være null og må være lengre enn 0 bokstaver")
+    @field:NotBlank(message = "Alder kan ikke være null og må være lengre enn 0")
     @field:Min(13, message = "Du må være minst 13 for å kunne lage bruker")
     @field:Max(120, message = "Bruh")
     @field:NotEmpty("Alder kan ikke være tomt")

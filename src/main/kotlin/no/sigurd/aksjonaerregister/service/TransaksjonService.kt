@@ -1,22 +1,20 @@
 package no.sigurd.aksjonaerregister.service
 
-import com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date
+import jakarta.transaction.Transactional
 import no.sigurd.aksjonaerregister.model.dto.TransaksjonsRequestDTO
-import no.sigurd.aksjonaerregister.model.entity.Aksjonaer
 import no.sigurd.aksjonaerregister.model.entity.Transaksjon
 import no.sigurd.aksjonaerregister.repository.AksjonaerRepository
 import no.sigurd.aksjonaerregister.repository.TransaksjonRepository
 import org.springframework.stereotype.Service
-import java.util.UUID
 
 @Service
 class TransaksjonService(
     private val transaksjonRepository: TransaksjonRepository,
     private val aksjonaerRepository: AksjonaerRepository,
     ) {
+        @Transactional
     fun registrerTransakjson(foedselsnummer: String, request: TransaksjonsRequestDTO): Transaksjon {
-        val aksjonaer = aksjonaerRepository.findByFoedselsnummer(foedselsnummer)
-            ?: throw IllegalArgumentException("Fant ikke aksjonær med fødselsnummer: $foedselsnummer")
+        val aksjonaer = aksjonaerRepository.findByFoedselsnummer(foedselsnummer).orElseThrow { Exception("Fant ikke aksjonær med $foedselsnummer") }
 
         val transaksjon = Transaksjon(
             aksjonaer = aksjonaer,
