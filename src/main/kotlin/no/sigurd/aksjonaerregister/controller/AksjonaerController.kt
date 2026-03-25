@@ -1,5 +1,6 @@
 package no.sigurd.aksjonaerregister.controller
 
+import no.sigurd.aksjonaerregister.model.dto.AksjonaerDTO
 import no.sigurd.aksjonaerregister.model.dto.TransaksjonsRequestDTO
 import no.sigurd.aksjonaerregister.model.entity.Aksjonaer
 import no.sigurd.aksjonaerregister.model.entity.Transaksjon
@@ -24,7 +25,7 @@ class AksjonaerController(private val aksjonaerService: AksjonaerService,
 ) {
 
     @PostMapping
-    fun nyAksjonaer(@RequestBody aksjonaer: Aksjonaer) : ResponseEntity<Aksjonaer> {
+    fun nyAksjonaer(@RequestBody aksjonaer: AksjonaerDTO) : ResponseEntity<Aksjonaer> {
         val opprettet = aksjonaerService.nyAksjonaer(aksjonaer)
         return ResponseEntity.ok(opprettet)
     }
