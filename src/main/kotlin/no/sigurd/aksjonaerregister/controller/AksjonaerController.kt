@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import no.sigurd.aksjonaerregister.model.dto.AksjonaerResponsDTO
+import no.sigurd.aksjonaerregister.model.dto.TransaksjonResponsDTO
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.UUID
@@ -25,21 +27,21 @@ class AksjonaerController(private val aksjonaerService: AksjonaerService,
 ) {
 
     @PostMapping
-    fun nyAksjonaer(@RequestBody aksjonaer: AksjonaerDTO) : ResponseEntity<Aksjonaer> {
+    fun nyAksjonaer(@RequestBody aksjonaer: AksjonaerDTO) : ResponseEntity<AksjonaerResponsDTO> {
         val opprettet = aksjonaerService.nyAksjonaer(aksjonaer)
-        return ResponseEntity.ok(opprettet)
+        return ResponseEntity.ok(opprettet.toResponsDTO())
     }
 
     @GetMapping("/{fnr}")
-    fun hentAksjonaer(@PathVariable fnr: String): ResponseEntity<Aksjonaer> {
+    fun hentAksjonaer(@PathVariable fnr: String): ResponseEntity<AksjonaerResponsDTO> {
         val aksjonaer = aksjonaerService.hentAksjonaer(fnr)
-        return aksjonaer?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
+        return aksjonaer?.let { ResponseEntity.ok(it.toResponsDTO()) } ?: ResponseEntity.notFound().build()
     }
 
     @PostMapping("/{fnr}/transaksjoner")
-        fun registrerTransaksjon(@PathVariable fnr: String, @RequestBody request: TransaksjonsRequestDTO): ResponseEntity<Transaksjon>{
+        fun registrerTransaksjon(@PathVariable fnr: String, @RequestBody request: TransaksjonsRequestDTO): ResponseEntity<TransaksjonResponsDTO>{
             val nyTransaksjon = transaksjonService.registrerTransakjson(fnr, request)
-            return ResponseEntity.ok(nyTransaksjon)
+            return ResponseEntity.ok(nyTransaksjon.toResponsDTO())
         }
 //            val opprettet = transaksjonService.registrerTransaksjonForAksjonaer(fnr, request)
 //            return ResponseEntity
@@ -47,25 +49,28 @@ class AksjonaerController(private val aksjonaerService: AksjonaerService,
 //                .body(opprettet)
 
     @GetMapping("/{fnr}/transaksjoner")
-    fun hentTransaksjoner(@PathVariable fnr: String): ResponseEntity<List<Transaksjon>> {
-        return ResponseEntity.ok(transaksjonService.hentTransaksjonerForAksjonaer(fnr))
+    fun hentTransaksjoner(@PathVariable fnr: String): ResponseEntity<List<TransaksjonResponsDTO>> {
+        val transaksjoner = transaksjonService.hentTransaksjonerForAksjonaer(fnr)
+        return ResponseEntity.ok(transaksjoner.map { it.toResponsDTO() })
     }
 
-    private fun dummyTransaksjon(fnr: String): Transaksjon {
-        val dummyAksjonaer = Aksjonaer(
-            id = UUID.randomUUID(),
-            navn = "Ola Nordmann",
-            foedselsnummer = fnr
+    private fun Aksjonaer.toResponsDTO(): AksjonaerResponsDTO {
+        return AksjonaerResponsDTO(
+            id = this.id,
+            navn = this.navn,
+            foedselsnummer = this.foedselsnummer
         )
+    }
 
-        return Transaksjon(
-            id = UUID.randomUUID(),
-            aksjonaer = dummyAksjonaer,
-            aksjenavn = "Equinor",
-            transaksjonType = TransaksjonType.KJOEP,
-            antall = 100,
-            prisPerAksje = BigDecimal("250.50"),
-            dato = LocalDate.now()
+    private fun Transaksjon.toResponsDTO(): TransaksjonResponsDTO {
+        return TransaksjonResponsDTO(
+            id = this.id,
+            aksjenavn = this.aksjenavn,
+            transaksjonType = this.transaksjonType,
+            antall = this.antall,
+            prisPerAksje = this.prisPerAksje,
+            dato = this.dato,
+            aksjonaer = this.aksjonaer.toResponsDTO()
         )
     }
 }

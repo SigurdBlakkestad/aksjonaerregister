@@ -23,6 +23,7 @@ class Transaksjon(
     @GeneratedValue
     val id: UUID? = null,
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "aksjonaer_id", nullable = false)
     var aksjonaer: Aksjonaer,
