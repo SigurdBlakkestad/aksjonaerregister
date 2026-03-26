@@ -1,5 +1,6 @@
 package no.sigurd.aksjonaerregister.controller
 
+import jakarta.validation.Valid
 import no.sigurd.aksjonaerregister.model.dto.AksjonaerDTO
 import no.sigurd.aksjonaerregister.model.dto.TransaksjonsRequestDTO
 import no.sigurd.aksjonaerregister.model.entity.Aksjonaer
@@ -27,7 +28,7 @@ class AksjonaerController(private val aksjonaerService: AksjonaerService,
 ) {
 
     @PostMapping
-    fun nyAksjonaer(@RequestBody aksjonaer: AksjonaerDTO) : ResponseEntity<AksjonaerResponsDTO> {
+    fun nyAksjonaer(@Valid @RequestBody aksjonaer: AksjonaerDTO) : ResponseEntity<AksjonaerResponsDTO> {
         val opprettet = aksjonaerService.nyAksjonaer(aksjonaer)
         return ResponseEntity.ok(opprettet.toResponsDTO())
     }
@@ -39,7 +40,7 @@ class AksjonaerController(private val aksjonaerService: AksjonaerService,
     }
 
     @PostMapping("/{fnr}/transaksjoner")
-        fun registrerTransaksjon(@PathVariable fnr: String, @RequestBody request: TransaksjonsRequestDTO): ResponseEntity<TransaksjonResponsDTO>{
+        fun registrerTransaksjon(@PathVariable fnr: String,@Valid @RequestBody request: TransaksjonsRequestDTO): ResponseEntity<TransaksjonResponsDTO>{
             val nyTransaksjon = transaksjonService.registrerTransakjson(fnr, request)
             return ResponseEntity.ok(nyTransaksjon.toResponsDTO())
         }
